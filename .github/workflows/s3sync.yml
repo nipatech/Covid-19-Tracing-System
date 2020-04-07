@@ -18,7 +18,7 @@ jobs:
     steps:
     # checkout master repo
     - name: checkout
-    - uses: actions/checkout@v2
+      uses: actions/checkout@v2
      
    # setup nodejs
     - name: setup node
@@ -37,7 +37,7 @@ jobs:
         yarn run build
         
     - name: upload to s3 bucket (person folder)
-    - uses: jakejarvis/s3-sync-action@master
+      uses: jakejarvis/s3-sync-action@master
       with:
         args: --acl public-read --follow-symlinks --delete
       env:
