@@ -1,7 +1,8 @@
 {
-  "name": "react-boilerplate",
+  "name": "covid-19-tracing-system",
   "version": "0.0.1",
   "private": false,
+  "license": "ISC",
   "scripts": {
     "start": "webpack-dev-server --mode development --port 8080",
     "build": "webpack --config webpack.config.production.js",
