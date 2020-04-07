@@ -1,0 +1,33 @@
+{
+  "root": true,
+  "parser": "babel-eslint",
+  "parserOptions": {
+    "sourceType": "module"
+  },
+  "env": {
+    "browser": true,
+    "node": true,
+    "jest": true
+  },
+  "extends": [    
+    "airbnb",
+    "prettier"
+  ],
+  "plugins": [
+    "prettier"
+  ],
+  "rules": {
+    "jsx-a11y/label-has-for": "off",
+    "jsx-a11y/alt-text": "off",
+    "jsx-a11y/click-events-have-key-events": "off",
+    "jsx-a11y/anchor-is-valid": "off",
+    "jsx-a11y/no-noninteractive-tabindex": "off",
+    "react/destructuring-assignment": 1,
+    "react/jsx-filename-extension": "off",
+    "react/jsx-one-expression-per-line": "off",
+    "react/forbid-prop-types": "off",
+    "import/extensions": 0,
+    "import/no-unresolved": 0,
+    "react/jsx-props-no-spreading": 0
+  }
+}
