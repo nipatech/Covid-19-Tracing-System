@@ -6,7 +6,7 @@ function Container (props) {
   return(
     <div style={{ textAlign: "center" }}>
 
-      Contacts
+      Contact change update
 
     </div>
   )
