@@ -16,9 +16,10 @@ jobs:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
     steps:
+
     # checkout master repo
     - name: checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@master
      
    # setup nodejs
     - name: setup node
@@ -48,9 +49,9 @@ jobs:
         SOURCE_DIR: 'webforms/person/dist'   
         
     - name: upload to s3 bucket (tracing folder)
-    - uses: jakejarvis/s3-sync-action@master
+      uses: jakejarvis/s3-sync-action@master
       with:
-        args: --acl public-read --follow-symlinks --delete
+        args: --acl public-read --exclude '.git*/*' --delete --follow-symlinks
       env:
         AWS_S3_BUCKET: ${{ secrets.AWS_S3_BUCKET }}
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY }}
