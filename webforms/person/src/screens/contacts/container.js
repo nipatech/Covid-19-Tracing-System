@@ -33,9 +33,9 @@ function Container (props) {
           <TableBody>
             {props.contactList.map((row) => (
               <TableRow key={row.firstname}>
-                <TableCell component="th" scope="row">{row.firstname}</TableCell>
-                <TableCell align="left">{row.lastname}</TableCell>
-                <TableCell align="left">{row.contact}</TableCell>
+                <TableCell component="th" scope="row">{row.firstName}</TableCell>
+                <TableCell align="left">{row.lastName}</TableCell>
+                <TableCell align="left">{row.contactNumber}</TableCell>
                 <TableCell align="left">{row.address}</TableCell>
               </TableRow>
             ))}
