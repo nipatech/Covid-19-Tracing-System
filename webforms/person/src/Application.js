@@ -4,18 +4,26 @@ import { Provider } from 'react-redux';
 import { ConnectedRouter } from "connected-react-router";
 import { store, history } from './store/configureStore';
 
-import Route from './router';
+import { PublicRoute, PrivateRoute } from './router';
 import Layout from "./Layout";
 const token = localStorage.getItem("token");
 
 export default () => (
   <Provider store={store}>
+
     <ConnectedRouter history={history}>
+
       { token ? (
+
         <Layout>
-          <Route />
+
+          <PrivateRoute />
+          
         </Layout>
-      ): <Route /> }
+
+      ): <PublicRoute /> }
+
     </ConnectedRouter>
+
   </Provider>
 )
