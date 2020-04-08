@@ -5,7 +5,50 @@ import covidImage from "../../../images/covid.png";
 const FormWrapper = styled.div`
   width: 100%;
   margin: 0 auto;
-  
+  p{
+    font-size: 17px;
+    font-weight: bold;
+  }
+  .login-header-text{
+    p{
+      padding: 15px 50px;
+      color: #2366cb;
+    }
+  }
+  ul {
+    width: 100%;
+    li {
+      padding-left: 0;
+
+      svg{
+        font-size: 54px;
+        margin-right: 20px;
+        color: #3f51b5;
+
+        &.rss-feed{
+          color: #f27025;
+        }
+      }
+
+      .local-phone-avatar{
+        width: 56px;
+        height: 56px;
+        margin-right: 20px;
+        background-color: #81c3e1;
+        svg{
+          font-size: 39px;
+          color: white;
+          margin-right: 0;
+        }
+      }
+    }
+  }
+  .register{
+    margin-top: 20px;
+    width: 100%;
+    border: 1px solid gray;
+    margin-bottom: 20px;
+  }
   .container-login{
     width: 100%;
     min-height: 100vh;
@@ -16,7 +59,7 @@ const FormWrapper = styled.div`
     background: #ebeeef;
   }
   .wrapper-login{
-    width: 670px;
+    width: 440px;
     background: #fff;
     border-radius: 10px;
     overflow: hidden;
@@ -34,7 +77,6 @@ const FormWrapper = styled.div`
       background-size: cover;
       background-position: center;
       padding: 70px 15px 74px 15px;
-      /* height: 260px; */
       background-image: url(${covidImage});
 
       &::before{
@@ -64,9 +106,12 @@ const FormWrapper = styled.div`
       justify-content: space-between;
       margin: auto 30px;
       padding: 30px;
+      &.no-padding{
+        padding-top: 0;
+      }
       .MuiTextField-root{
         width: 100%;
-        margin-bottom: 30px;
+        margin-bottom: 15px;
       }
     }
 
