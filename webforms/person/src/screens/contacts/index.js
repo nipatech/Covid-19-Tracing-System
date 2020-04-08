@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
 
-import Container from './container';
+import ContactContainer from './container';
 import axios from 'axios'
 
 
@@ -75,4 +75,4 @@ const actionCreators = {
 };
 
 
-export default connect(mapStateToProps,actionCreators)(Container);
+export default connect(mapStateToProps,actionCreators)(ContactContainer);
