@@ -33,9 +33,6 @@ jobs:
         cd webforms/person
         yarn
         yarn run build
-        cd ../tracing
-        yarn
-        yarn run build
         
     - name: upload to s3 bucket (person folder)
       uses: jakejarvis/s3-sync-action@master
@@ -47,17 +44,26 @@ jobs:
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_KEY }}
         AWS_REGION: ${{ secrets.AWS_REGION }}  
         SOURCE_DIR: 'webforms/person/dist'   
+    
+    # Run the build script on tracing 
+    # - name: build tracing
+    #  run: |
+    #  comment out, no tracing features yet
+    #  cd ~/webforms/tracing
+    #  yarn
+    #  yarn run build
         
-    - name: upload to s3 bucket (tracing folder)
-      uses: jakejarvis/s3-sync-action@master
-      with:
-        args: --acl public-read --exclude '.git*/*' --delete --follow-symlinks
-      env:
-        AWS_S3_BUCKET: ${{ secrets.AWS_S3_BUCKET }}
-        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY }}
-        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_KEY }}
-        AWS_REGION: ${{ secrets.AWS_REGION }}  
-        SOURCE_DIR: 'webforms/tracing/dist'
+    #  comment out, no tracing features yet
+    #- name: upload to s3 bucket (tracing folder)
+    #  uses: jakejarvis/s3-sync-action@master
+    #  with:
+    #    args: --acl public-read --exclude '.git*/*' --delete --follow-symlinks
+    #  env:
+    #    AWS_S3_BUCKET: ${{ secrets.AWS_S3_BUCKET }}
+    #    AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY }}
+    #    AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_KEY }}
+    #    AWS_REGION: ${{ secrets.AWS_REGION }}  
+    #    SOURCE_DIR: 'webforms/tracing/dist'
    
     # Invalidate Cloudfront (this action)
     - name: invalidate cloudFront
