@@ -6,13 +6,16 @@ import { store, history } from './store/configureStore';
 
 import Route from './router';
 import Layout from "./Layout";
+const token = localStorage.getItem("token");
 
 export default () => (
   <Provider store={store}>
     <ConnectedRouter history={history}>
-      <Layout>
-        <Route />
-      </Layout>
+      { token ? (
+        <Layout>
+          <Route />
+        </Layout>
+      ): <Route /> }
     </ConnectedRouter>
   </Provider>
 )

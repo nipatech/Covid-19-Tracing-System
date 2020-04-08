@@ -8,7 +8,7 @@ const Profile = lazy(() => import("./screens/profile"));
 
 const LoadingMessage = () => <div>loading...</div>
 
-export default () => (
+export default (isLogin) => (
 
   <Suspense fallback={<LoadingMessage />}>
 
