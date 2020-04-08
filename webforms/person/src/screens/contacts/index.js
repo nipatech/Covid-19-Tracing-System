@@ -5,7 +5,7 @@ import axios from 'axios'
 
 
 /**
- * Get contact list request
+ * GET /contacts?page=&row=
  * [
  *      {
  *          "firstName" : "Patrick Mark"
@@ -21,6 +21,23 @@ const getContactList = () => {
     })
 }
 
+/**
+ * POST /contact
+ * [
+ *      {
+ *          "firstName" : "Patrick Mark"
+ *          "lastName" : "Mazo",
+ *          "contactNumber" : "+639361555555",
+ *          "address" : "Quezon City" (Optional)
+ *      }
+ * ]
+ */
+const createContact = (firstName, lastName, contactNumber, addresss) => {
+    console.log("waddap");
+}
+
+
+/** Dummy Data */
 const contactList = [
     {
         "firstName" : 'Patrick Mark', 
@@ -53,7 +70,8 @@ const mapStateToProps = (state) => ({
 });
 
 const actionCreators = {
-    getContactList
+    getContactList,
+    createContact
 };
 
 
