@@ -1,7 +1,7 @@
 import { combineReducers } from "redux";
 
-import { reducer as counter } from './state/counter';
+import { reducer as loading } from './state/loading';
 
 export default combineReducers({
-  counter
+  loading
 });
