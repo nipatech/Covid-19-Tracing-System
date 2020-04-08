@@ -44,7 +44,6 @@ jobs:
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_KEY }}
         AWS_REGION: ${{ secrets.AWS_REGION }}  
         SOURCE_DIR: 'webforms/person/dist'   
-        DEST_DIR:  'person'
     
     # Run the build script on tracing 
     # - name: build tracing
