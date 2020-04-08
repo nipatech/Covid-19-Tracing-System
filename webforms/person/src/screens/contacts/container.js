@@ -1,54 +1,43 @@
 import React from 'react';
-
 import PropTypes from 'prop-types';
-import { makeStyles } from '@material-ui/core/styles';
 import { 
   Table,TableBody,TableCell,TableContainer,
   TableHead,TableRow,Paper, Button, TextField,
   Dialog, DialogActions, DialogContent, DialogTitle,
-  DialogContext
+  Container
 } from '@material-ui/core';
 
-const useStyles = makeStyles({
-  table: {
-    minWidth: 650,
-  },
-});
+function ContactContainer (props) {
 
-function Container (props) {
-  const classes = useStyles();
-
-    const [open, setOpen] = React.useState(false);
-
-    const handleClickOpen = () => {
-      setOpen(true);
-    };
-
-    const handleClose = () => {
-      setOpen(false);
-    };
-
-    console.log(props);
+  const [open, setOpen] = React.useState(false);
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+  const handleClose = () => {
+    setOpen(false);
+  };
 
   return(
-    <div style={{ textAlign: "center" }}>
-      <div style={{display : "flex", marginBottom : "20px"}}>
-        <Button variant="contained" style={{marginLeft : "auto"}} color="primary" onClick={handleClickOpen}>
-          NEW CONTACT
-        </Button>
-      </div>
-      <TableContainer component={Paper}>
-        <Table className={classes.table} aria-label="simple table">
-          <TableHead>
-            <TableRow>
-              <TableCell>First Name</TableCell>
-              <TableCell align="left">Last Name</TableCell>
-              <TableCell align="left">Contact</TableCell>
-              <TableCell align="left">Address</TableCell>
-            </TableRow>
-          </TableHead>
+    <React.Fragment>
+      <Container maxWidth="xl">
+        <div style={{display : "flex", marginBottom : "20px"}}>
+          <Button variant="contained" style={{marginLeft : "auto"}} color="primary" onClick={handleClickOpen}>
+            NEW CONTACT
+          </Button>
+        </div>
         
-          <TableBody>
+        <TableContainer component={Paper}>
+          <Table aria-label="Contact Table">
+            <TableHead>
+              <TableRow>
+                <TableCell>First Name</TableCell>
+                <TableCell align="left">Last Name</TableCell>
+                <TableCell align="left">Contact</TableCell>
+                <TableCell align="left">Address</TableCell>
+              </TableRow>
+            </TableHead>
+        
+            <TableBody>
             {props.contactList.map((row) => (
               <TableRow key={row.firstname}>
                 <TableCell component="th" scope="row">{row.firstName}</TableCell>
@@ -57,11 +46,11 @@ function Container (props) {
                 <TableCell align="left">{row.address}</TableCell>
               </TableRow>
             ))}
-        </TableBody>
-      </Table>
-      </TableContainer> 
+            </TableBody>
+          </Table>
+        </TableContainer> 
 
-      <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
+        <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
           <DialogTitle id="form-dialog-title">New Contact</DialogTitle>
             <DialogContent>
               <TextField
@@ -102,13 +91,15 @@ function Container (props) {
             <Button onClick={handleClose} color="primary">Cancel</Button>
             <Button onClick={props.createContact} color="primary">Save</Button>
           </DialogActions>
-      </Dialog>
-    </div>
+        </Dialog>
+
+      </Container>
+    </React.Fragment>
   )
 } 
 
-Container.propTypes = {
+ContactContainer.propTypes = {
 
 }
 
-export default Container;
+export default ContactContainer;
