@@ -18,7 +18,7 @@ export default () => (
         <Layout>
 
           <PrivateRoute />
-          
+
         </Layout>
 
       ): <PublicRoute /> }
