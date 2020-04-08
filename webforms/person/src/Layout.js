@@ -16,13 +16,16 @@ import {
   IconButton,
   ListItem,
   ListItemIcon,
-  ListItemText
+  ListItemText,
+  Button
 } from '@material-ui/core';
 
 import MenuIcon from "@material-ui/icons/Menu";
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import MailIcon from '@material-ui/icons/Mail';
+import SupervisedUserCircleIcon from "@material-ui/icons/SupervisedUserCircle";
+import AccountCircleIcon from "@material-ui/icons/AccountCircle";
 
 const drawerWidth = 240;
 
@@ -35,7 +38,7 @@ const useStyles = makeStyles((theme) => ({
     transition: theme.transitions.create(['width', 'margin'], {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
-    }),
+    })
   },
   appBarShift: {
     marginLeft: drawerWidth,
@@ -57,6 +60,7 @@ const useStyles = makeStyles((theme) => ({
     whiteSpace: 'nowrap',
   },
   drawerOpen: {
+    overflow: "hidden",
     width: drawerWidth,
     transition: theme.transitions.create('width', {
       easing: theme.transitions.easing.sharp,
@@ -79,13 +83,39 @@ const useStyles = makeStyles((theme) => ({
     alignItems: 'center',
     justifyContent: 'flex-end',
     padding: theme.spacing(0, 1),
-    // necessary for content to be below app bar
     ...theme.mixins.toolbar,
   },
   content: {
     flexGrow: 1,
     padding: theme.spacing(3),
   },
+  withLink: {
+    "& a": {
+      textDecoration: "none",
+      color: "rgb(158, 160, 165)",
+      
+      "&:hover": {
+        color: "#3f51b5"
+      }
+    }
+  },
+  btnLogOut: {
+    position: "absolute",
+    bottom: 25,
+    width: "90%",
+    left: "5%",
+    background: "rgb(240, 78, 55)",
+    color: "#FFF",
+    borderRadius: 3,
+    "&:hover": {
+      background: "rgb(240, 78, 55)",
+      color: "#FFF"
+    },
+    "& a": {
+      color: "#FFF",
+      textDecoration: "none"
+    }
+  }
 }));
 
 function Layout(props) {
@@ -148,12 +178,12 @@ function Layout(props) {
           </IconButton>
         </div>
         <Divider />
-        <List>
+        <List className={classes.withLink}>
 
           <Link to="/contacts">
             <ListItem button>
               <ListItemIcon>
-                <MailIcon />
+                <SupervisedUserCircleIcon />
               </ListItemIcon>
               <ListItemText primary="Contacts" />
             </ListItem>
@@ -162,14 +192,18 @@ function Layout(props) {
           <Link to="/profile">
             <ListItem button>
               <ListItemIcon>
-                <MailIcon />
+                <AccountCircleIcon />
               </ListItemIcon>
-              <ListItemText primary="Contacts" />
+              <ListItemText primary="Profile" />
             </ListItem>
           </Link>
           
         </List>
         <Divider />
+
+        <Button className={classes.btnLogOut} onClick={() => localStorage.removeItem("token")}>
+          <Link to="/">Logout</Link>
+        </Button>
       </Drawer>
       <main className={classes.content}>
         <div className={classes.toolbar} />
