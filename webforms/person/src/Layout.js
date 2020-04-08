@@ -180,7 +180,6 @@ function Layout(props) {
     </div>
   );
 }
-
 Layout.propTypes = {
   children: PropTypes.oneOfType([
     PropTypes.arrayOf(PropTypes.node),
@@ -190,3 +189,4 @@ Layout.propTypes = {
 
 
 export default Layout;
+
