@@ -158,7 +158,7 @@ function Container (props) {
     Auth.sendCustomChallengeAnswer(cognitoUser, `${code.a}${code.b}${code.c}${code.d}${code.e}${code.f}`)
     .then(response => {
       localStorage.setItem("token", JSON.stringify(cognitoUser));
-      window.location = "/profile";
+      window.location = "/contacts";
       setSubmitting(false);
     }).catch(error => {
       setSubmitting(false);
