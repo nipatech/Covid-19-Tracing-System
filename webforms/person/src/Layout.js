@@ -155,7 +155,7 @@ function Layout(props) {
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" noWrap>
-            Covid-19-Tracing-System
+            COVID-19 CONTACT TRACING SERVICE
           </Typography>
         </Toolbar>
       </AppBar>
