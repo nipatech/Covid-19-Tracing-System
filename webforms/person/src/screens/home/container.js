@@ -340,94 +340,6 @@ function Container (props) {
               </Fragment>
             )}
 
-            { view === "verify-registration" && (
-              <Fragment>
-                <List>
-                  <ListItem>
-                    <ListItemText primary="A 6-digit verification code is sent to you via sms, please enter code to verify your phone number." />
-                  </ListItem>
-                </List>
-
-                <TextField 
-                  className="code"
-                  variant="outlined"
-                  id="code-a"
-                  value={code.a}
-                  name="code-a"
-                  onChange={handleChangeCode("a")}
-                  inputProps={{
-                    maxLength: 1
-                  }}
-                />
-                <TextField 
-                  className="code"
-                  variant="outlined"
-                  id="code-b"
-                  name="code-b"
-                  value={code.b}
-                  onChange={handleChangeCode("b")}
-                  inputProps={{
-                    maxLength: 1
-                  }}
-                />
-                <TextField 
-                  className="code"
-                  variant="outlined"
-                  id="code-c"
-                  name="code-c"
-                  value={code.c}
-                  onChange={handleChangeCode("c")}
-                  inputProps={{
-                    maxLength: 1
-                  }}
-                />
-                <TextField 
-                  className="code"
-                  variant="outlined"
-                  id="code-d"
-                  name="code-d"
-                  value={code.d}
-                  onChange={handleChangeCode("d")}
-                  inputProps={{
-                    maxLength: 1
-                  }}
-                />
-                <TextField 
-                  className="code"
-                  variant="outlined"
-                  id="code-e"
-                  name="code-f"
-                  value={code.e}
-                  onChange={handleChangeCode("e")}
-                  inputProps={{
-                    maxLength: 1
-                  }}
-                />
-                <TextField 
-                  className="code"
-                  variant="outlined"
-                  id="code-f"
-                  name="code-f"
-                  value={code.f}
-                  onChange={handleChangeCode("f")}
-                  inputProps={{
-                    maxLength: 1
-                  }}
-                />
-
-                <Button className="register" id="verify-login" onClick={onClickVerifyReg} disabled={submitting}>
-                  Submit
-                  {submitting && (
-                    <CircularProgress className="progress"/>
-                  )}
-                </Button>
-
-                <div className="account-helper">
-                  Didn't receive the code? <span onClick={() => setView("register")}>Resend Code</span>
-                </div>
-              </Fragment>
-            )}
-
             { view === "verify-login" && (
               <Fragment>
                 <List>
@@ -511,7 +423,7 @@ function Container (props) {
                 </Button>
 
                 <div className="account-helper">
-                  Didn't receive the code? <span onClick={() => setView("register")}>Resend Code</span>
+                  Didn't receive the code? <br /> <span onClick={() => setView("register")}>Resend Code</span>
                 </div>
               </Fragment>
             )}
