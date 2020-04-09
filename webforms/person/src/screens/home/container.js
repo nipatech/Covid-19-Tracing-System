@@ -54,6 +54,7 @@ function Container (props) {
   });
 
   const [submitting, setSubmitting] = useState(false);
+  const [resending, setResending] = useState(false);
   const [cognitoUser, setCognitoUser] = useState(null);
 
   const [snackBar, setSnackBar] = useState({
@@ -105,7 +106,7 @@ function Container (props) {
       cid: state.caseID
     }).then(async (response) => {
       
-      if (response.data.errorMessage && response.data.errorMessage === "An account with the given phone_number already exists."){
+      if (response.data && response.data.errorMessage && response.data.errorMessage === "An account with the given phone_number already exists."){
         setSnackBar({ open: true, message: "Phone number already registered."})
       } else {
         onClickLogin(state.phoneNumber)
@@ -150,11 +151,24 @@ function Container (props) {
       document.getElementById("code-a").focus();
     })
     .catch(err => {
+      console.log(err)
       setSnackBar({ open: true, message: "Phone number not registered."})
       setSubmitting(false);
     });
   }
 
+  const onClickResend = async () => {
+    setResending(true);
+    await Auth.signIn(phoneNumberLogin)
+    .then(success => {
+      setCognitoUser(success);
+      setResending(false);
+      document.getElementById("code-a").focus();
+    })
+    .catch(err => {
+      setResending(false);
+    });
+  }
   const onClickVerifyLogin = async () => {
     setSubmitting(true);
     Auth.sendCustomChallengeAnswer(cognitoUser, `${code.a}${code.b}${code.c}${code.d}${code.e}${code.f}`)
@@ -167,7 +181,9 @@ function Container (props) {
         localStorage.setItem("token", JSON.stringify(cognitoUser));
         window.location = "/contacts";
       } else {
-        setSnackBar({ open: true, message: "Code is invalid"})
+        setSnackBar({ open: true, message: "Code is invalid"});
+        setCode({ a: "", b: "", c: "", d: "", e: "", f: "" });
+        document.getElementById("code-a").focus();
       }
       setSubmitting(false);
       
@@ -340,94 +356,6 @@ function Container (props) {
               </Fragment>
             )}
 
-            { view === "verify-registration" && (
-              <Fragment>
-                <List>
-                  <ListItem>
-                    <ListItemText primary="A 6-digit verification code is sent to you via sms, please enter code to verify your phone number." />
-                  </ListItem>
-                </List>
-
-                <TextField 
-                  className="code"
-                  variant="outlined"
-                  id="code-a"
-                  value={code.a}
-                  name="code-a"
-                  onChange={handleChangeCode("a")}
-                  inputProps={{
-                    maxLength: 1
-                  }}
-                />
-                <TextField 
-                  className="code"
-                  variant="outlined"
-                  id="code-b"
-                  name="code-b"
-                  value={code.b}
-                  onChange={handleChangeCode("b")}
-                  inputProps={{
-                    maxLength: 1
-                  }}
-                />
-                <TextField 
-                  className="code"
-                  variant="outlined"
-                  id="code-c"
-                  name="code-c"
-                  value={code.c}
-                  onChange={handleChangeCode("c")}
-                  inputProps={{
-                    maxLength: 1
-                  }}
-                />
-                <TextField 
-                  className="code"
-                  variant="outlined"
-                  id="code-d"
-                  name="code-d"
-                  value={code.d}
-                  onChange={handleChangeCode("d")}
-                  inputProps={{
-                    maxLength: 1
-                  }}
-                />
-                <TextField 
-                  className="code"
-                  variant="outlined"
-                  id="code-e"
-                  name="code-f"
-                  value={code.e}
-                  onChange={handleChangeCode("e")}
-                  inputProps={{
-                    maxLength: 1
-                  }}
-                />
-                <TextField 
-                  className="code"
-                  variant="outlined"
-                  id="code-f"
-                  name="code-f"
-                  value={code.f}
-                  onChange={handleChangeCode("f")}
-                  inputProps={{
-                    maxLength: 1
-                  }}
-                />
-
-                <Button className="register" id="verify-login" onClick={onClickVerifyReg} disabled={submitting}>
-                  Submit
-                  {submitting && (
-                    <CircularProgress className="progress"/>
-                  )}
-                </Button>
-
-                <div className="account-helper">
-                  Didn't receive the code? <span onClick={() => setView("register")}>Resend Code</span>
-                </div>
-              </Fragment>
-            )}
-
             { view === "verify-login" && (
               <Fragment>
                 <List>
@@ -509,9 +437,8 @@ function Container (props) {
                     <CircularProgress className="progress"/>
                   )}
                 </Button>
-
                 <div className="account-helper">
-                  Didn't receive the code? <span onClick={() => setView("register")}>Resend Code</span>
+                  Didn't receive the code? <br /> { !resending && <span onClick={onClickResend} >Resend Code</span> }
                 </div>
               </Fragment>
             )}
