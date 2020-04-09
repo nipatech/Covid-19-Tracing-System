@@ -1,27 +1,17 @@
 import React from 'react';
 // import PropTypes from 'prop-types';
-import CssBaseline from '@material-ui/core/CssBaseline';
-import Typography from '@material-ui/core/Typography';
-import ContainerUi from '@material-ui/core/Container';
-import { makeStyles } from '@material-ui/core/styles';
-import Card from '@material-ui/core/Card';
-import CardActions from '@material-ui/core/CardActions';
-import CardContent from '@material-ui/core/CardContent';
-import Button from '@material-ui/core/Button';
-import Grid from '@material-ui/core/Grid';
-import Avatar from '@material-ui/core/Avatar';
-import { borders } from '@material-ui/system';
-import { TextField } from '@material-ui/core';
 
-const useStyles = makeStyles({
+import { 
+  TextField, Avatar, CardActions,
+  Card, CardContent, Button, Grid,
+  makeStyles, Typography, CssBaseline,
+  Container 
+} from '@material-ui/core';
+
+const useStyles = makeStyles((theme) => ({
   root: {
     maxWidth:"325px",
     border : "1px solid #eee",
-  },
-  bullet: {
-    display: 'inline-block',
-    margin: '0 2px',
-    transform: 'scale(0.8)',
   },
   title: {
     fontSize: 14,
@@ -39,22 +29,28 @@ const useStyles = makeStyles({
     width:"100%",
     height:"230px"
   },
-});
+  margin: {
+    margin: theme.spacing(1),
+  },
+}));
 
-function Container () {
+function ProfileContainer (props) {
   const classes = useStyles();
-  const bull = <span className={classes.bullet}>•</span>;
 
   return(
     <React.Fragment>
       <CssBaseline />
-      <ContainerUi fixed>
+      <Container fixed>
       <Grid container spacing={2}>
         <Grid item xs={12} >
           <Card className={classes.root}>
             <CardContent>
               <Grid item sm={12} xs={12} className={classes.avatar_content} >
                 <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" className={classes.large} />
+              </Grid>
+
+              <Grid item sm={12} xs={12} >
+ 
               </Grid>
 
               <TextField
@@ -64,6 +60,7 @@ function Container () {
                 label="First Name"
                 type="text"
                 fullWidth
+                value={props.firstName}
                 required
               />
 
@@ -73,6 +70,7 @@ function Container () {
                 id="middleName"
                 label="Middle Name"
                 type="text"
+                value={props.middleName}
                 fullWidth
               />
 
@@ -83,30 +81,34 @@ function Container () {
                 label="Last Name"
                 type="text"
                 fullWidth
+                value={props.lastName}
+                required
+              />
+
+              <TextField
+                autoFocus
+                margin="dense"
+                id="contactNo"
+                label="Contact No"
+                type="text"
+                fullWidth
+                value={props.contactNo}
                 required
               />
          
-              
             </CardContent>
             <CardActions>
             </CardActions>
           </Card>
         </Grid>
       </Grid>
-      </ContainerUi>
+      </Container>
     </React.Fragment>
-
-
-
-
-
-
-
   )
 }
 
-Container.propTypes = {
+ProfileContainer.propTypes = {
 
 }
 
-export default Container;
+export default ProfileContainer;
