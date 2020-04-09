@@ -54,6 +54,7 @@ function Container (props) {
   });
 
   const [submitting, setSubmitting] = useState(false);
+  const [resending, setResending] = useState(false);
   const [cognitoUser, setCognitoUser] = useState(null);
 
   const [snackBar, setSnackBar] = useState({
@@ -105,7 +106,7 @@ function Container (props) {
       cid: state.caseID
     }).then(async (response) => {
       
-      if (response.data.errorMessage && response.data.errorMessage === "An account with the given phone_number already exists."){
+      if (response.data && response.data.errorMessage && response.data.errorMessage === "An account with the given phone_number already exists."){
         setSnackBar({ open: true, message: "Phone number already registered."})
       } else {
         onClickLogin(state.phoneNumber)
@@ -150,11 +151,24 @@ function Container (props) {
       document.getElementById("code-a").focus();
     })
     .catch(err => {
+      console.log(err)
       setSnackBar({ open: true, message: "Phone number not registered."})
       setSubmitting(false);
     });
   }
 
+  const onClickResend = async () => {
+    setResending(true);
+    await Auth.signIn(phoneNumberLogin)
+    .then(success => {
+      setCognitoUser(success);
+      setResending(false);
+      document.getElementById("code-a").focus();
+    })
+    .catch(err => {
+      setResending(false);
+    });
+  }
   const onClickVerifyLogin = async () => {
     setSubmitting(true);
     Auth.sendCustomChallengeAnswer(cognitoUser, `${code.a}${code.b}${code.c}${code.d}${code.e}${code.f}`)
@@ -167,7 +181,9 @@ function Container (props) {
         localStorage.setItem("token", JSON.stringify(cognitoUser));
         window.location = "/contacts";
       } else {
-        setSnackBar({ open: true, message: "Code is invalid"})
+        setSnackBar({ open: true, message: "Code is invalid"});
+        setCode({ a: "", b: "", c: "", d: "", e: "", f: "" });
+        document.getElementById("code-a").focus();
       }
       setSubmitting(false);
       
@@ -421,9 +437,8 @@ function Container (props) {
                     <CircularProgress className="progress"/>
                   )}
                 </Button>
-
                 <div className="account-helper">
-                  Didn't receive the code? <br /> <span onClick={() => setView("register")}>Resend Code</span>
+                  Didn't receive the code? <br /> { !resending && <span onClick={onClickResend} >Resend Code</span> }
                 </div>
               </Fragment>
             )}
