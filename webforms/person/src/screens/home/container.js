@@ -73,6 +73,7 @@ function Container (props) {
       }
     });
 
+    Auth.signOut();
   }, [])
 
   const handleChange = name => event => setState({...state, [name]: event.target.value});
@@ -153,7 +154,6 @@ function Container (props) {
       setSubmitting(false);
     })
   }
-
 
   const validateReg = () => {
     if (
@@ -270,7 +270,7 @@ function Container (props) {
                 />
 
                 <Button className="register" onClick={onClickRegister} disabled={submitting || validateReg()}>
-                  Register
+                  Submit
                   {submitting && (
                     <CircularProgress className="progress"/>
                   )}
@@ -389,7 +389,7 @@ function Container (props) {
                 </Button>
 
                 <div className="account-helper">
-                  No Account? <span onClick={() => setView("register")}>resend</span>
+                  Didn't receive the code? <span onClick={() => setView("register")}>Resend Code</span>
                 </div>
               </Fragment>
             )}
@@ -465,7 +465,7 @@ function Container (props) {
                 </Button>
 
                 <div className="account-helper">
-                  No Account? <span onClick={() => setView("register")}>resend</span>
+                  Didn't receive the code? <span onClick={() => setView("register")}>Resend Code</span>
                 </div>
               </Fragment>
             )}
