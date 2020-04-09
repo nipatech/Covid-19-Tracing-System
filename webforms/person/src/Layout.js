@@ -26,6 +26,7 @@ import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import MailIcon from '@material-ui/icons/Mail';
 import SupervisedUserCircleIcon from "@material-ui/icons/SupervisedUserCircle";
 import AccountCircleIcon from "@material-ui/icons/AccountCircle";
+import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 
 const drawerWidth = 240;
 
@@ -113,7 +114,10 @@ const useStyles = makeStyles((theme) => ({
     },
     "& a": {
       color: "#FFF",
-      textDecoration: "none"
+      textDecoration: "none",
+      "& svg": {
+        verticalAlign: "bottom"
+      }
     }
   }
 }));
@@ -202,7 +206,9 @@ function Layout(props) {
         <Divider />
 
         <Button className={classes.btnLogOut} onClick={() => localStorage.removeItem("token")}>
-          <Link to="/">Logout</Link>
+          <Link to="/">
+            { !open ? <ExitToAppIcon /> : "Logout"}
+          </Link>
         </Button>
       </Drawer>
       <main className={classes.content}>
