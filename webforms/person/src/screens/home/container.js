@@ -44,14 +44,7 @@ function Container (props) {
     caseID: ""
   });
 
-  const [code, setCode] = useState({
-    a: "",
-    b: "",
-    c: "",
-    d: "",
-    e: "",
-    f: ""
-  });
+  const [code, setCode] = useState({a: "", b: "", c: "", d: "", e: "", f: ""});
 
   const [submitting, setSubmitting] = useState(false);
   const [resending, setResending] = useState(false);
@@ -130,7 +123,6 @@ function Container (props) {
       setSubmitting(false);
       
     }).catch(error => {
-      console.log(error)
       setSubmitting(false);
     });
   };
@@ -151,7 +143,6 @@ function Container (props) {
         })
       }
     }).catch(error => {
-      console.log(error)
       setSubmitting(false);
     });
   };
@@ -160,14 +151,12 @@ function Container (props) {
     setSubmitting(true);
     await Auth.signIn(phonNumber_async ? phonNumber_async : phoneNumberLogin)
     .then(success => {
-      console.log(success)
       setCognitoUser(success);
       setView("verify-login");
       setSubmitting(false);
       document.getElementById("code-a").focus();
     })
     .catch(err => {
-      console.log(err)
       setSnackBar({ open: true, message: "Phone number not registered."})
       setSubmitting(false);
     });
@@ -185,11 +174,11 @@ function Container (props) {
       setResending(false);
     });
   }
+
   const onClickVerifyLogin = async () => {
     setSubmitting(true);
     Auth.sendCustomChallengeAnswer(cognitoUser, `${code.a}${code.b}${code.c}${code.d}${code.e}${code.f}`)
     .then(async (response) => {
-      console.log(response);
 
       const isAuthenticate = await isAuthenticated();
 
@@ -216,6 +205,7 @@ function Container (props) {
       return false;
     }
   }
+
   const validateReg = () => {
     if (
       !/^(\+639)\d{9}$/.test(state.phoneNumber) ||
