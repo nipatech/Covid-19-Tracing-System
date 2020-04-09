@@ -78,7 +78,16 @@ function Container (props) {
 
   const handleChange = name => event => setState({...state, [name]: event.target.value});
 
-  const handleChangeCode = name => event => setCode({...code, [name]: event.target.value.replace(/[^0-9]/g, '')});
+  const handleChangeCode = name => event => {
+    setCode({...code, [name]: event.target.value.replace(/[^0-9]/g, '')});
+
+    if (name === "a" && event.target.value !== ""){ document.getElementById("code-b").focus(); }
+    if (name === "b" && event.target.value !== ""){ document.getElementById("code-c").focus(); }
+    if (name === "c" && event.target.value !== ""){ document.getElementById("code-d").focus(); }
+    if (name === "d" && event.target.value !== ""){ document.getElementById("code-e").focus(); }
+    if (name === "e" && event.target.value !== ""){ document.getElementById("code-f").focus(); }
+    if (name === "f" && event.target.value !== ""){ document.getElementById("verify-login").focus(); }
+  }
   
   const validatePhoneReg = (event) => {
     setState({...state, "phoneNumber": event.target.value.replace(/[^0-9+\s]/g, '') })
@@ -136,6 +145,7 @@ function Container (props) {
       setCognitoUser(success);
       setView("verify-login");
       setSubmitting(false);
+      document.getElementById("code-a").focus();
     })
     .catch(err => {
       console.log(err)
@@ -148,7 +158,7 @@ function Container (props) {
     Auth.sendCustomChallengeAnswer(cognitoUser, `${code.a}${code.b}${code.c}${code.d}${code.e}${code.f}`)
     .then(response => {
       localStorage.setItem("token", JSON.stringify(cognitoUser));
-      window.location = "/profile";
+      window.location = "/contacts";
       setSubmitting(false);
     }).catch(error => {
       setSubmitting(false);
@@ -329,7 +339,9 @@ function Container (props) {
                 <TextField 
                   className="code"
                   variant="outlined"
+                  id="code-a"
                   value={code.a}
+                  name="code-a"
                   onChange={handleChangeCode("a")}
                   inputProps={{
                     maxLength: 1
@@ -338,6 +350,8 @@ function Container (props) {
                 <TextField 
                   className="code"
                   variant="outlined"
+                  id="code-b"
+                  name="code-b"
                   value={code.b}
                   onChange={handleChangeCode("b")}
                   inputProps={{
@@ -347,6 +361,8 @@ function Container (props) {
                 <TextField 
                   className="code"
                   variant="outlined"
+                  id="code-c"
+                  name="code-c"
                   value={code.c}
                   onChange={handleChangeCode("c")}
                   inputProps={{
@@ -356,6 +372,8 @@ function Container (props) {
                 <TextField 
                   className="code"
                   variant="outlined"
+                  id="code-d"
+                  name="code-d"
                   value={code.d}
                   onChange={handleChangeCode("d")}
                   inputProps={{
@@ -365,6 +383,8 @@ function Container (props) {
                 <TextField 
                   className="code"
                   variant="outlined"
+                  id="code-e"
+                  name="code-f"
                   value={code.e}
                   onChange={handleChangeCode("e")}
                   inputProps={{
@@ -374,6 +394,8 @@ function Container (props) {
                 <TextField 
                   className="code"
                   variant="outlined"
+                  id="code-f"
+                  name="code-f"
                   value={code.f}
                   onChange={handleChangeCode("f")}
                   inputProps={{
@@ -381,7 +403,7 @@ function Container (props) {
                   }}
                 />
 
-                <Button className="register" onClick={onClickVerifyReg} disabled={submitting}>
+                <Button className="register" id="verify-login" onClick={onClickVerifyReg} disabled={submitting}>
                   Submit
                   {submitting && (
                     <CircularProgress className="progress"/>
@@ -405,7 +427,9 @@ function Container (props) {
                 <TextField 
                   className="code"
                   variant="outlined"
+                  id="code-a"
                   value={code.a}
+                  name="code-a"
                   onChange={handleChangeCode("a")}
                   inputProps={{
                     maxLength: 1
@@ -414,6 +438,8 @@ function Container (props) {
                 <TextField 
                   className="code"
                   variant="outlined"
+                  id="code-b"
+                  name="code-b"
                   value={code.b}
                   onChange={handleChangeCode("b")}
                   inputProps={{
@@ -423,6 +449,8 @@ function Container (props) {
                 <TextField 
                   className="code"
                   variant="outlined"
+                  id="code-c"
+                  name="code-c"
                   value={code.c}
                   onChange={handleChangeCode("c")}
                   inputProps={{
@@ -432,6 +460,8 @@ function Container (props) {
                 <TextField 
                   className="code"
                   variant="outlined"
+                  id="code-d"
+                  name="code-d"
                   value={code.d}
                   onChange={handleChangeCode("d")}
                   inputProps={{
@@ -441,6 +471,8 @@ function Container (props) {
                 <TextField 
                   className="code"
                   variant="outlined"
+                  id="code-e"
+                  name="code-f"
                   value={code.e}
                   onChange={handleChangeCode("e")}
                   inputProps={{
@@ -450,6 +482,8 @@ function Container (props) {
                 <TextField 
                   className="code"
                   variant="outlined"
+                  id="code-f"
+                  name="code-f"
                   value={code.f}
                   onChange={handleChangeCode("f")}
                   inputProps={{
@@ -457,7 +491,7 @@ function Container (props) {
                   }}
                 />
 
-                <Button className="register" onClick={onClickVerifyLogin} disabled={submitting}>
+                <Button className="register" id="verify-login" onClick={onClickVerifyLogin} disabled={submitting}>
                   Submit
                   {submitting && (
                     <CircularProgress className="progress"/>
