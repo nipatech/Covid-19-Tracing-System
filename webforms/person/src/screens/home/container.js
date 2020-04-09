@@ -90,11 +90,27 @@ function Container (props) {
   }
   
   const validatePhoneReg = (event) => {
-    setState({...state, "phoneNumber": event.target.value.replace(/[^0-9+\s]/g, '') })
+    if (event.target.value.indexOf("+63") !== 0){
+      setState({
+        ...state, 
+        "phoneNumber": state.phoneNumber
+      })
+    } else {
+      setState({
+        ...state, 
+        "phoneNumber": event.target.value.replace(/[^0-9+]/g, '')
+      })
+    }
+    
   };
 
   const validatePhoneLogin = (event) => {
-    setPhoneNumberLogin(event.target.value.replace(/[^0-9+\s]/g, ''))
+    if (event.target.value.indexOf("+63") !== 0){
+      setPhoneNumberLogin(phoneNumberLogin)
+    } else {
+      setPhoneNumberLogin(event.target.value.replace(/[^0-9+]/g, ''))
+    }
+    
   };
 
   const onClickRegister = async () => {
@@ -289,6 +305,7 @@ function Container (props) {
                   label="Philippines (+63)"
                   value={state.phoneNumber}
                   inputProps={{
+                    maxLength: 13,
                     onInput: (event) => validatePhoneReg(event)
                   }}
                 />
@@ -339,6 +356,7 @@ function Container (props) {
                   label="Philippines (+63)"
                   value={phoneNumberLogin}
                   inputProps={{
+                    maxLength: 13,
                     onInput: (event) => validatePhoneLogin(event)
                   }}
                 />
