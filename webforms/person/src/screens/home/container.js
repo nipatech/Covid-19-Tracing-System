@@ -1,5 +1,10 @@
 import React, { useEffect, useState, Fragment } from 'react';
 import PropTypes from 'prop-types';
+import axios from "axios";
+
+import Auth from '@aws-amplify/auth';
+import Amplify from '@aws-amplify/core';
+import { CognitoUser } from 'amazon-cognito-identity-js';
 
 import {
   TextField,
@@ -10,19 +15,24 @@ import {
   ListItemText,
   ListItemAvatar,
   Avatar,
-  Divider
+  Divider,
+  CircularProgress,
+  Snackbar,
+  IconButton
 } from '@material-ui/core';
 
 import InfoOutlinedIcon from "@material-ui/icons/InfoOutlined";
 import AccountCircleIcon from "@material-ui/icons/AccountCircleOutlined";
 import RssFeedIcon from "@material-ui/icons/RssFeedOutlined";
 import LocalPhoneIcon from "@material-ui/icons/LocalPhone";
+import CloseIcon from '@material-ui/icons/Close';
+
 
 import FormWrapper from "./styles/form.style";
 
 function Container (props) {
   const token = localStorage.getItem("token");
-  const {componentDidMount, onClickLogin } = props;
+  const {componentDidMount } = props;
   
   const [view, setView] = useState("info");
 
@@ -35,13 +45,39 @@ function Container (props) {
     caseID: ""
   });
 
-  
+  const [code, setCode] = useState({
+    a: "",
+    b: "",
+    c: "",
+    d: "",
+    e: "",
+    f: ""
+  });
+
+  const [submitting, setSubmitting] = useState(false);
+  const [cognitoUser, setCognitoUser] = useState(null);
+
+  const [snackBar, setSnackBar] = useState({
+    open: false,
+    message: ""
+  });
 
   useEffect(() => { 
-    componentDidMount()
+    componentDidMount();
+
+    Amplify.configure({
+      Auth: {
+        region: "us-east-1",
+        userPoolId: "us-east-1_0ALSymhqt",
+        userPoolWebClientId: "2ti454ncsvu168ic6099da8d2i"
+      }
+    });
+
   }, [])
 
   const handleChange = name => event => setState({...state, [name]: event.target.value});
+
+  const handleChangeCode = name => event => setCode({...code, [name]: event.target.value.replace(/[^0-9]/g, '')});
   
   const validatePhoneReg = (event) => {
     setState({...state, "phoneNumber": event.target.value.replace(/[^0-9+\s]/g, '') })
@@ -50,6 +86,87 @@ function Container (props) {
   const validatePhoneLogin = (event) => {
     setPhoneNumberLogin(event.target.value.replace(/[^0-9+\s]/g, ''))
   };
+
+  const onClickRegister = async () => {
+
+    setSubmitting(true);
+    axios.post("https://xgmcrilfq1.execute-api.us-east-1.amazonaws.com/COVID/register", {
+      pn: state.phoneNumber,
+      fn: state.firstName,
+      ln: state.lastName,
+      cid: state.caseID
+    }).then(response => {
+      console.log(response)
+      if (response.data.errorMessage && response.data.errorMessage === "An account with the given phone_number already exists."){
+        setSnackBar({ open: true, message: "Phone number already registered."})
+      } else {
+        setView("verify-registration") 
+      }
+      setSubmitting(false);
+    }).catch(error => {
+      console.log(error)
+      setSubmitting(false);
+    });
+  };
+
+  const onClickVerifyReg = async () => {
+    setSubmitting(true);
+    axios.post("https://xgmcrilfq1.execute-api.us-east-1.amazonaws.com/COVID/confirm-user", {
+      pn: state.phoneNumber,
+      cc: `${code.a}${code.b}${code.c}${code.d}${code.e}${code.f}`
+    }).then(response => {
+      console.log(response)
+      Auth.signIn(state.phoneNumber)
+      .then(success => {
+        localStorage.setItem("token", success);
+        window.location = "/profile";
+      })
+    }).catch(error => {
+      console.log(error)
+      setSubmitting(false);
+    });
+  };
+
+  const onClickLogin = async () => {
+    setSubmitting(true);
+    Auth.signIn(phoneNumberLogin)
+    .then(success => {
+      console.log(success)
+      setCognitoUser(success);
+      setView("verify-login");
+      setSubmitting(false);
+    })
+    .catch(err => {
+      console.log(err)
+      setSubmitting(false);
+    });
+  }
+
+  const onClickVerifyLogin = async () => {
+    setSubmitting(true);
+    Auth.sendCustomChallengeAnswer(cognitoUser, `${code.a}${code.b}${code.c}${code.d}${code.e}${code.f}`)
+    .then(response => {
+      localStorage.setItem("token", JSON.stringify(cognitoUser));
+      window.location = "/profile";
+      setSubmitting(false);
+    }).catch(error => {
+      setSubmitting(false);
+    })
+  }
+
+
+  const validateReg = () => {
+    if (
+      !/^(\+639)\d{9}$/.test(state.phoneNumber) ||
+      state.firstName.trim().length === 0 || 
+      state.lastName.trim().length === 0 || 
+      state.caseID.trim().length === 0 
+    ) { return true; }
+
+    return false
+  }
+
+  const validatePHPhoneNumber = (phone) => /^(\+639)\d{9}$/.test(phone) ? false : true;
 
   if (token) return null;
 
@@ -62,7 +179,7 @@ function Container (props) {
           
           { view === "sign-in" && (
             <div className="login-header-text">
-              <p>COVID-19 TRACING SYSTEM</p>
+              <p>COVID-19 CONTACT TRACING SERVICE</p>
               <Divider />
             </div>
           )}
@@ -152,8 +269,11 @@ function Container (props) {
                   onChange={handleChange("caseID")}
                 />
 
-                <Button className="register">
+                <Button className="register" onClick={onClickRegister} disabled={submitting || validateReg()}>
                   Register
+                  {submitting && (
+                    <CircularProgress className="progress"/>
+                  )}
                 </Button>
 
                 <div className="account-helper">
@@ -178,19 +298,174 @@ function Container (props) {
 
                 <TextField 
                   id="phone"
-                  label="Phone Number"
+                  label="Philippines (+63)"
                   value={phoneNumberLogin}
                   inputProps={{
                     onInput: (event) => validatePhoneLogin(event)
                   }}
                 />
 
-                <Button className="register" onClick={onClickLogin}>
+                <Button className="register" onClick={onClickLogin} disabled={submitting || validatePHPhoneNumber(phoneNumberLogin)}>
                   Sign In
+                  {submitting && (
+                    <CircularProgress className="progress"/>
+                  )}
                 </Button>
 
                 <div className="account-helper">
                   No Account? <span onClick={() => setView("register")}>Register</span>
+                </div>
+              </Fragment>
+            )}
+
+            { view === "verify-registration" && (
+              <Fragment>
+                <List>
+                  <ListItem>
+                    <ListItemText primary="A 6-digit verification code is sent to you via sms, please enter code to verify your phone number." />
+                  </ListItem>
+                </List>
+
+                <TextField 
+                  className="code"
+                  variant="outlined"
+                  value={code.a}
+                  onChange={handleChangeCode("a")}
+                  inputProps={{
+                    maxLength: 1
+                  }}
+                />
+                <TextField 
+                  className="code"
+                  variant="outlined"
+                  value={code.b}
+                  onChange={handleChangeCode("b")}
+                  inputProps={{
+                    maxLength: 1
+                  }}
+                />
+                <TextField 
+                  className="code"
+                  variant="outlined"
+                  value={code.c}
+                  onChange={handleChangeCode("c")}
+                  inputProps={{
+                    maxLength: 1
+                  }}
+                />
+                <TextField 
+                  className="code"
+                  variant="outlined"
+                  value={code.d}
+                  onChange={handleChangeCode("d")}
+                  inputProps={{
+                    maxLength: 1
+                  }}
+                />
+                <TextField 
+                  className="code"
+                  variant="outlined"
+                  value={code.e}
+                  onChange={handleChangeCode("e")}
+                  inputProps={{
+                    maxLength: 1
+                  }}
+                />
+                <TextField 
+                  className="code"
+                  variant="outlined"
+                  value={code.f}
+                  onChange={handleChangeCode("f")}
+                  inputProps={{
+                    maxLength: 1
+                  }}
+                />
+
+                <Button className="register" onClick={onClickVerifyReg} disabled={submitting}>
+                  Submit
+                  {submitting && (
+                    <CircularProgress className="progress"/>
+                  )}
+                </Button>
+
+                <div className="account-helper">
+                  No Account? <span onClick={() => setView("register")}>resend</span>
+                </div>
+              </Fragment>
+            )}
+
+            { view === "verify-login" && (
+              <Fragment>
+                <List>
+                  <ListItem>
+                    <ListItemText primary="A 6-digit verification code is sent to you via sms, please enter code to verify your phone number." />
+                  </ListItem>
+                </List>
+
+                <TextField 
+                  className="code"
+                  variant="outlined"
+                  value={code.a}
+                  onChange={handleChangeCode("a")}
+                  inputProps={{
+                    maxLength: 1
+                  }}
+                />
+                <TextField 
+                  className="code"
+                  variant="outlined"
+                  value={code.b}
+                  onChange={handleChangeCode("b")}
+                  inputProps={{
+                    maxLength: 1
+                  }}
+                />
+                <TextField 
+                  className="code"
+                  variant="outlined"
+                  value={code.c}
+                  onChange={handleChangeCode("c")}
+                  inputProps={{
+                    maxLength: 1
+                  }}
+                />
+                <TextField 
+                  className="code"
+                  variant="outlined"
+                  value={code.d}
+                  onChange={handleChangeCode("d")}
+                  inputProps={{
+                    maxLength: 1
+                  }}
+                />
+                <TextField 
+                  className="code"
+                  variant="outlined"
+                  value={code.e}
+                  onChange={handleChangeCode("e")}
+                  inputProps={{
+                    maxLength: 1
+                  }}
+                />
+                <TextField 
+                  className="code"
+                  variant="outlined"
+                  value={code.f}
+                  onChange={handleChangeCode("f")}
+                  inputProps={{
+                    maxLength: 1
+                  }}
+                />
+
+                <Button className="register" onClick={onClickVerifyLogin} disabled={submitting}>
+                  Submit
+                  {submitting && (
+                    <CircularProgress className="progress"/>
+                  )}
+                </Button>
+
+                <div className="account-helper">
+                  No Account? <span onClick={() => setView("register")}>resend</span>
                 </div>
               </Fragment>
             )}
@@ -200,6 +475,18 @@ function Container (props) {
         </div>
       </div>
 
+
+      <Snackbar
+        anchorOrigin={{vertical: 'top', horizontal: 'center'}}
+        open={snackBar.open}
+        onClose={() => setSnackBar({ open: false, message: ""})}
+        message={snackBar.message}
+        action={[
+          <IconButton key="close" aria-label="close" color="inherit" onClick={() => setSnackBar({ open: false, message: ""})}>
+            <CloseIcon />
+          </IconButton>
+        ]}
+      />
     </FormWrapper>
   )
 }

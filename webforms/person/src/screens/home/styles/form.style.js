@@ -112,6 +112,13 @@ const FormWrapper = styled.div`
       .MuiTextField-root{
         width: 100%;
         margin-bottom: 15px;
+
+        &.code{
+          width: calc(100%/6 - 15px);
+          input{
+            text-align: center;
+          }
+        }
       }
     }
 
@@ -124,6 +131,12 @@ const FormWrapper = styled.div`
     }
   }
 
+  .progress{
+    width: 24px !important;
+    height: 24px !important;
+    position: absolute;
+    right: 50px;
+  }
   @media screen and (max-width: 576px){
     .wrapper-login{
       width: 90%;
