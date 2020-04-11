@@ -120,7 +120,6 @@ function Container (props) {
       } else {
         onClickLogin(state.phoneNumber)
       }
-      setSubmitting(false);
       
     }).catch(error => {
       setSubmitting(false);
@@ -218,6 +217,21 @@ function Container (props) {
 
   const validatePHPhoneNumber = (phone) => /^(\+639)\d{9}$/.test(phone) ? false : true;
 
+  const validateCode = () => {
+    if (
+      code.a.length > 0 &&
+      code.b.length > 0 &&
+      code.c.length > 0 &&
+      code.d.length > 0 &&
+      code.e.length > 0 &&
+      code.f.length > 0
+    ) {
+      return false
+    }
+
+    return true;
+  } 
+  
   if (token) return null;
 
   return(
@@ -278,7 +292,7 @@ function Container (props) {
             )}
 
             { view === "register" && (
-              <Fragment>
+              <form onSubmit={e => e.preventDefault() }>
                 <List>
                   <ListItem>
                     <ListItemAvatar>
@@ -289,7 +303,7 @@ function Container (props) {
                     <ListItemText primary="Enter your phone number to register." />
                   </ListItem>
                 </List>
-
+                
                 <TextField
                   id="phone"
                   label="Philippines (+63)"
@@ -306,7 +320,7 @@ function Container (props) {
                   value={state.name}
                   onChange={handleChange("name")}
                 />
-                   
+                  
                 <TextField
                   id="caseID"
                   label="Case ID"
@@ -314,22 +328,22 @@ function Container (props) {
                   onChange={handleChange("caseID")}
                 />
 
-                <Button className="register" onClick={onClickRegister} disabled={submitting || validateReg()}>
+                <Button className="register" type="submit" onClick={onClickRegister} disabled={submitting || validateReg()}>
                   Submit
                   {submitting && (
                     <CircularProgress className="progress"/>
                   )}
                 </Button>
-
+                
                 <div className="account-helper">
                   Already registered? <span onClick={() => setView("sign-in")}>Sign In</span>
                 </div>
 
-              </Fragment>
+              </form>
             )}
 
             { view === "sign-in" && (
-              <Fragment>
+              <form onSubmit={e => e.preventDefault()}>
                 <List>
                   <ListItem>
                     <ListItemAvatar>
@@ -351,7 +365,7 @@ function Container (props) {
                   }}
                 />
 
-                <Button className="register" onClick={() => onClickLogin(null)} disabled={submitting || validatePHPhoneNumber(phoneNumberLogin)}>
+                <Button className="register" type="submit" onClick={() => onClickLogin(null)}  disabled={submitting || validatePHPhoneNumber(phoneNumberLogin)}>
                   Sign In
                   {submitting && (
                     <CircularProgress className="progress"/>
@@ -361,17 +375,18 @@ function Container (props) {
                 <div className="account-helper">
                   No Account? <span onClick={() => setView("register")}>Register</span>
                 </div>
-              </Fragment>
+              </form>
             )}
 
             { view === "verify-login" && (
-              <Fragment>
+              <form onSubmit={e => e.preventDefault()} className="form-code">
                 <List>
                   <ListItem>
                     <ListItemText primary="A 6-digit verification code is sent to you via sms, please enter code to verify your phone number." />
                   </ListItem>
                 </List>
 
+                
                 <TextField 
                   className="code"
                   variant="outlined"
@@ -439,7 +454,7 @@ function Container (props) {
                   }}
                 />
 
-                <Button className="register" id="verify-login" onClick={onClickVerifyLogin} disabled={submitting}>
+                <Button className="register" id="verify-login" type="submit" onClick={onClickVerifyLogin} disabled={submitting || validateCode()}>
                   Submit
                   {submitting && (
                     <CircularProgress className="progress"/>
@@ -448,7 +463,8 @@ function Container (props) {
                 <div className="account-helper">
                   Didn't receive the code? <br /> { !resending && <span onClick={onClickResend} >Resend Code</span> }
                 </div>
-              </Fragment>
+
+              </form>
             )}
             
           </div>

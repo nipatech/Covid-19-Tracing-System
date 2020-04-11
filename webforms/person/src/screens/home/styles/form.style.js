@@ -129,6 +129,11 @@ const FormWrapper = styled.div`
         font-weight: bold;
       }
     }
+    .form-code{
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+    }
   }
 
   .progress{
