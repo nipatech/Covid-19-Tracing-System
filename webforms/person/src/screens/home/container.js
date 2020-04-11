@@ -57,12 +57,12 @@ function Container (props) {
 
   useEffect(() => { 
     componentDidMount();
-
+    
     Amplify.configure({
       Auth: {
-        region: "us-east-1",
-        userPoolId: "us-east-1_yeBWTkyZM",
-        userPoolWebClientId: "10hn7lcvarkn7o0982ojfngc42"
+        region: process.env.REACT_AMPLIFY_REGION,
+        userPoolId: process.env.REACT_AMPLIFY_POOL_ID,
+        userPoolWebClientId: process.env.REACT_AMPLIFY_CLIENT_ID
       }
     });
 
@@ -109,7 +109,7 @@ function Container (props) {
   const onClickRegister = async () => {
     
     setSubmitting(true);
-    axios.post("https://lltkyad8xg.execute-api.us-east-1.amazonaws.com/COVID/register", {
+    axios.post(`${process.env.REACT_ENDPOINT}/register`, {
       pn: state.phoneNumber,
       n: state.name,
       cid: state.caseID
@@ -129,7 +129,7 @@ function Container (props) {
 
   const onClickVerifyReg = async () => {
     setSubmitting(true);
-    axios.post("https://lltkyad8xg.execute-api.us-east-1.amazonaws.com/COVID/confirm-user", {
+    axios.post(`${process.env.REACT_ENDPOINT}/confirm-user`, {
       pn: state.phoneNumber,
       cc: `${code.a}${code.b}${code.c}${code.d}${code.e}${code.f}`
     }).then(response => {
