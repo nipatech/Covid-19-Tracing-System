@@ -1,78 +1,13 @@
 import { connect } from 'react-redux';
-
 import ContactContainer from './container';
-import axios from 'axios'
 
-
-/**
- * GET /contacts?page=&row=
- * [
- *      {
- *          "firstName" : "Patrick Mark"
- *          "lastName" : "Mazo",
- *          "contactNumber" : "+639361555555",
- *          "address" : "Quezon City" (Optional)
- *      }
- * ]
- */
-const getContactList = () => {
-    axios.get("")
-      .then(res => {
-    })
-}
-
-/**
- * POST /contact
- * [
- *      {
- *          "firstName" : "Patrick Mark"
- *          "lastName" : "Mazo",
- *          "contactNumber" : "+639361555555",
- *          "address" : "Quezon City" (Optional)
- *      }
- * ]
- */
-const createContact = (firstName, lastName, contactNumber, addresss) => {
-    console.log("waddap");
-}
-
-
-/** Dummy Data */
-const contactList = [
-    {
-        "firstName" : 'Patrick Mark', 
-        "lastName" : 'Mazo', 
-        "contactNumber" : '+639361555555',
-        "address" : 'Quezon City'
-    },
-    {
-        "firstName" : 'Rowel', 
-        "lastName" : 'de Guzman', 
-        "contactNumber" : '+639361555555',
-        "address" : 'Quezon City'
-    },
-    {
-        "firstName" : 'Joejin', 
-        "lastName" : 'Chavez', 
-        "contactNumber" : '+639361555555',
-        "address" : 'Quezon City'
-    },
-    {
-        "firstName" : 'Jhon Patrick', 
-        "lastName" : 'Jampolina', 
-        "contactNumber" : '+639361555555',
-        "address" : 'Quezon City'
-    }
-];
+const info = localStorage.getItem("token");
+const details = JSON.parse(info).signInUserSession.idToken.payload;
+const jwtToken = JSON.parse(info).signInUserSession.idToken.jwtToken;
 
 const mapStateToProps = (state) => ({
-    contactList : contactList
+    details : details,
+    jwtToken : jwtToken,
 });
 
-const actionCreators = {
-    getContactList,
-    createContact
-};
-
-
-export default connect(mapStateToProps,actionCreators)(ContactContainer);
+export default connect(mapStateToProps)(ContactContainer);

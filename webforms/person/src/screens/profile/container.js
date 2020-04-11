@@ -57,35 +57,13 @@ function ProfileContainer (props) {
               <TextField
                 autoFocus
                 margin="dense"
-                id="firstName"
-                label="First Name"
+                id="fullname"
+                label="Full Name"
                 type="text"
                 fullWidth
-                value={props.firstName}
+                value={props.fullname}
                 required
               />
-
-              <TextField
-                autoFocus
-                margin="dense"
-                id="middleName"
-                label="Middle Name"
-                type="text"
-                value={props.middleName}
-                fullWidth
-              />
-
-              <TextField
-                autoFocus
-                margin="dense"
-                id="lastName"
-                label="Last Name"
-                type="text"
-                fullWidth
-                value={props.lastName}
-                required
-              />
-
               <TextField
                 autoFocus
                 margin="dense"
@@ -94,6 +72,16 @@ function ProfileContainer (props) {
                 type="text"
                 fullWidth
                 value={props.contactNo}
+                required
+              />
+              <TextField
+                autoFocus
+                margin="dense"
+                id="caseId"
+                label="Case ID"
+                type="text"
+                fullWidth
+                value={props.caseId}
                 required
               />
          

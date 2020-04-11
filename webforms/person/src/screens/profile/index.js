@@ -1,19 +1,17 @@
 import { connect } from 'react-redux';
 
 import ProfileContainer from './container';
+/** Get details from local storage */
+const info = localStorage.getItem("token");
+const details = JSON.parse(info).signInUserSession.idToken.payload;
 
-/** Dummy Data */
-const firstName     = "Jampz"
-const middleName    = "Ay"
-const lastName      = "Baliw"
-const contactNo     = "+639222312321"
-const caseId        = "s3da5f465dsa4f56"
+const fullname     = details.name
+const contactNo     = details.phone_number
+const caseId        = details["custom:caseID"]
 
 
 const mapStateToProps = () => ({
-    firstName       : firstName,
-    middleName      : middleName,
-    lastName        : lastName,
+    fullname       : fullname,
     contactNo       : contactNo,
     caseId          : caseId,
 });
