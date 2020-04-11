@@ -16,7 +16,7 @@ export default () => (
 
       { token ? (
 
-        <Layout>
+        <Layout history={history}>
 
           <PrivateRoute />
 
