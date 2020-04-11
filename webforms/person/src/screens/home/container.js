@@ -3,8 +3,6 @@ import PropTypes from 'prop-types';
 import axios from "axios";
 
 import Auth from '@aws-amplify/auth';
-import Amplify from '@aws-amplify/core';
-import { CognitoUser } from 'amazon-cognito-identity-js';
 
 import {
   TextField,
@@ -56,16 +54,8 @@ function Container (props) {
   });
 
   useEffect(() => { 
+    console.log(process.env.REACT_ENDPOINT)
     componentDidMount();
-    
-    Amplify.configure({
-      Auth: {
-        region: process.env.REACT_AMPLIFY_REGION,
-        userPoolId: process.env.REACT_AMPLIFY_POOL_ID,
-        userPoolWebClientId: process.env.REACT_AMPLIFY_CLIENT_ID
-      }
-    });
-
     Auth.signOut();
   }, [])
 
@@ -182,6 +172,7 @@ function Container (props) {
       const isAuthenticate = await isAuthenticated();
 
       if (isAuthenticate) {
+        console.log(cognitoUser);
         localStorage.setItem("token", JSON.stringify(cognitoUser));
         window.location = "/contacts";
       } else {

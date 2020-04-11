@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
+import axios from "axios";
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import { Link } from "react-router-dom";
+import Auth from '@aws-amplify/auth';
 
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 
@@ -135,6 +137,26 @@ function Layout(props) {
 
   const { children, history } = props;
   
+  useEffect(() => {
+    try {
+      const jwtToken = JSON.parse(localStorage.getItem("token")).signInUserSession.idToken.jwtToken;
+
+      axios.defaults.headers.common = {
+        "Authorization": jwtToken,
+        'Content-Type': 'application/json',
+      };
+    } catch{
+      localStorage.removeItem("token")
+    }
+
+    refreshToken();
+
+    setInterval(() => {
+      refreshToken()
+    }, 3480000);
+    
+  }, []);
+
   const handleDrawerOpen = () => {
     setOpen(true);
   };
@@ -142,6 +164,20 @@ function Layout(props) {
   const handleDrawerClose = () => {
     setOpen(false);
   };
+
+  const refreshToken = async () => {
+    const cognitoUser = await Auth.currentAuthenticatedUser();
+    Auth.currentSession(JSON.parse(localStorage.getItem("token")))
+      .then((response) => {
+        axios.defaults.headers.common = {
+          Authorization: response.idToken.jwtToken,
+        };
+
+      })
+      .catch((error) => {
+          console.log(error);
+      });
+  }
 
   return (
     <div className={classes.root}>
