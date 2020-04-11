@@ -6,12 +6,7 @@ import InputAdornment from '@material-ui/core/InputAdornment';
 import DeleteIcon from '@material-ui/icons/Delete'
 import CloseIcon from '@material-ui/icons/Close';
 
-import {
-  BrowserView,
-  MobileView,
-  isBrowser,
-  isMobile
-} from "react-device-detect";
+import { isMobile } from "react-device-detect";
 
 import { 
   Table,TableBody,TableCell,TableContainer,
