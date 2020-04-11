@@ -54,7 +54,6 @@ function Container (props) {
   });
 
   useEffect(() => { 
-    console.log(process.env.REACT_ENDPOINT)
     componentDidMount();
     Auth.signOut();
   }, [])
