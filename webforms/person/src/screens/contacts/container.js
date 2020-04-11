@@ -69,7 +69,6 @@ function ContactContainer (props) {
 
   const validatePhone2 = (event) => {
     if (event.target.value.indexOf("+63") !== 0){
-      console.log(event.target.value);
       seteditInfo({
         ...editInfo, 
         phone_number: "+63"
@@ -209,7 +208,7 @@ function ContactContainer (props) {
           <Dialog open={edit} onClose={handleClose} aria-labelledby="form-dialog-title">
             <DialogTitle id="form-dialog-title">Update Contact</DialogTitle>
               <DialogContent>
-              <TextField
+                <TextField
                   autoFocus
                   margin="dense"
                   id="fullName"
@@ -225,7 +224,10 @@ function ContactContainer (props) {
                   id="contactNumber"
                   label="Contact Number"
                   value={editInfo.phone_number}
-                  onChange={infoHandler("phone_number")}
+                  inputProps={{
+                    maxLength: 13,
+                    onInput: (event) => validatePhone2(event)
+                  }}
                   type="text"
                   fullWidth
                   required
@@ -237,7 +239,17 @@ function ContactContainer (props) {
               <Button onClick={onClickUpdateContact} color="primary">Save</Button>
             </DialogActions>
           </Dialog>
-  
+          <Snackbar
+            anchorOrigin={{vertical: 'top', horizontal: 'center'}}
+            open={snackBar.open}
+            onClose={() => setSnackBar({ open: false, message: ""})}
+            message={snackBar.message}
+            action={[
+              <IconButton key="close" aria-label="close" color="inherit" onClick={() => setSnackBar({ open: false, message: ""})}>
+                <CloseIcon />
+              </IconButton>
+            ]}
+          />
         </Container>
       </React.Fragment>
     )
@@ -329,7 +341,7 @@ function ContactContainer (props) {
           <Dialog open={edit} onClose={handleClose} aria-labelledby="form-dialog-title">
             <DialogTitle id="form-dialog-title">Update Contact</DialogTitle>
               <DialogContent>
-              <TextField
+                <TextField
                   autoFocus
                   margin="dense"
                   id="fullName"
