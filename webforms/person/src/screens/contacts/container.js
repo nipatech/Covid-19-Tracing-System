@@ -32,8 +32,14 @@ function ContactContainer (props) {
   };
 
   const getContactList = async () => {
+    console.log(props);
     await axios.post(`${process.env.REACT_ENDPOINT}/view-contact-person`, {
         ppk:  props.details.sub,
+    },{
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': props.jwtToken
+      }
     }).then(response => {
       setData({ data:  response.data.Items })
     }).catch(error => {
@@ -46,6 +52,11 @@ function ContactContainer (props) {
       ppk:  props.details.sub,
       n:    state.fullName,
       pn:   state.contactNumber,
+    },{
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': props.jwtToken
+      }
     }).then(response => {
       handleClose()
       getContactList()
@@ -55,12 +66,17 @@ function ContactContainer (props) {
   }
   const infoHandler = name => event => seteditInfo({...editInfo, [name]: event.target.value});
   const onClickUpdateContact = async () => {
-    axios.post(`${process.env.REACT_ENDPOINT}/update-contact-person`, {
+    axios.post(`${process.env.REACT_ENDPOINT}/update-contact-person`,{
       ppk:  props.details.sub,
       n:    editInfo.full_name,
       ts :  editInfo.timestamp.toString(),
       pn:   editInfo.phone_number,
-    }).then(response => {
+    },{
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': props.jwtToken
+      }
+      }).then(response => {
       handleClose()
       getContactList()
     }).catch(error => {
@@ -72,6 +88,11 @@ function ContactContainer (props) {
     await axios.post(`${process.env.REACT_ENDPOINT}/delete-contact-person`, {
         ppk:  props.details.sub,
         ts : nextprops.timestamp
+    },{
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': props.jwtToken
+      }
     }).then(response => {
       getContactList()
     }).catch(error => {
