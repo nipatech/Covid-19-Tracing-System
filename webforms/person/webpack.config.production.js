@@ -5,6 +5,8 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 
+const dotenv = require('dotenv').config({path: __dirname + '/.env.prod'});
+
 const staticFolder = "static";
 
 module.exports = {
@@ -21,10 +23,9 @@ module.exports = {
   },
   devtool: false,
   plugins: [
+
     new webpack.DefinePlugin({
-      'process.env': {
-        NODE_ENV: JSON.stringify('production')
-      }
+      "process.env": JSON.stringify(dotenv.parsed)
     }),
     new HtmlWebpackPlugin({
       template: 'public/index.html',
