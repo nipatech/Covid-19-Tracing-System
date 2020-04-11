@@ -6,6 +6,8 @@ import InputAdornment from '@material-ui/core/InputAdornment';
 import DeleteIcon from '@material-ui/icons/Delete'
 import CloseIcon from '@material-ui/icons/Close';
 
+import { isMobile } from "react-device-detect";
+
 import { 
   Table,TableBody,TableCell,TableContainer,
   TableHead,TableRow,Paper, Button, TextField,
@@ -46,7 +48,6 @@ function ContactContainer (props) {
         ppk:  props.details.sub,
     }).then(response => {
       setData({ data:  response.data.Items })
-      window.render()
     }).catch(error => {
     });
   }
@@ -127,155 +128,257 @@ function ContactContainer (props) {
     setEdit(false);
 
   };
+
   useEffect(() => {
     getContactList()
   },[]);
-
-
-
-  const clear = () => {
-    const [state, setState] = useState({
-      fullName: "",
-      contactNumber: "+63",
-    });
+  if(isMobile) {
+    return(
+      <React.Fragment>
+        <Container maxWidth="xl">
+          <div style={{display : "flex", marginBottom : "20px"}}>
+            <Button variant="contained" style={{marginLeft : "auto"}} color="primary" onClick={handleClickOpen}>
+              NEW CONTACT
+            </Button>
+          </div>
+          <TableContainer component={Paper}>
+            <Table aria-label="Contact Table">
+              <TableHead>
+                <TableRow>
+                  <TableCell  width='130' align="left"></TableCell>
+                  <TableCell>Full Name</TableCell>
+                </TableRow>
+              </TableHead>
+              { !info.data  ? (
+                 <TableBody>
+                   <TableRow >
+                     <TableCell component="th" scope="row"></TableCell>
+                     <TableCell align="left"></TableCell>
+                   </TableRow>
+               </TableBody>
+              ) : (
+                <TableBody>
+                  { info.data.map((row) => (
+                    <TableRow key={row.full_name}>
+                       <TableCell align="left"> 
+                       <IconButton variant="contained" style={{marginLeft : "auto"}} onClick={() => handleUpdate(row)}><EditIcon /></IconButton>
+                       <IconButton variant="contained" style={{marginLeft : "auto"}} onClick={() => onClickDeleteContact(row)}><DeleteIcon /></IconButton>
+                      </TableCell>
+                      <TableCell component="th" scope="row">
+                        {row.full_name} <br></br>
+                        {row.phone_number}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              )}
+            </Table>
+          </TableContainer> 
   
+          <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
+            <DialogTitle id="form-dialog-title">New Contact</DialogTitle>
+              <DialogContent>
+              <TextField
+                  autoFocus
+                  margin="dense"
+                  id="fullName"
+                  label="Full Name"
+                  value={state.fullName}
+                  onChange={handleChange("fullName")}
+                  type="text"
+                  fullWidth
+                  required
+                />
+                <TextField
+                  margin="dense"
+                  id="contactNumber"
+                  label="Contact Number"
+                  value={state.contactNumber}
+                  onChange={handleChange("contactNumber")}
+                  type="text"
+                  fullWidth
+                  required
+                />
+              </DialogContent>
+          
+            <DialogActions>
+              <Button onClick={handleClose} color="primary">Cancel</Button>
+              <Button onClick={onClickCreateContact} color="primary">Save</Button>
+            </DialogActions>
+          </Dialog>
+          <Dialog open={edit} onClose={handleClose} aria-labelledby="form-dialog-title">
+            <DialogTitle id="form-dialog-title">Update Contact</DialogTitle>
+              <DialogContent>
+              <TextField
+                  autoFocus
+                  margin="dense"
+                  id="fullName"
+                  label="Full Name"
+                  value={editInfo.full_name}
+                  onChange={infoHandler("full_name")}
+                  type="text"
+                  fullWidth
+                  required
+                />
+                <TextField
+                  margin="dense"
+                  id="contactNumber"
+                  label="Contact Number"
+                  value={editInfo.phone_number}
+                  onChange={infoHandler("phone_number")}
+                  type="text"
+                  fullWidth
+                  required
+                />
+              </DialogContent>
+          
+            <DialogActions>
+              <Button onClick={handleClose} color="primary">Cancel</Button>
+              <Button onClick={onClickUpdateContact} color="primary">Save</Button>
+            </DialogActions>
+          </Dialog>
+  
+        </Container>
+      </React.Fragment>
+    )
+  } else {
+    return(
+      <React.Fragment>
+        <Container maxWidth="xl">
+          <div style={{display : "flex", marginBottom : "20px"}}>
+            <Button variant="contained" style={{marginLeft : "auto"}} color="primary" onClick={handleClickOpen}>
+              NEW CONTACT
+            </Button>
+          </div>
+          <TableContainer component={Paper}>
+            <Table aria-label="Contact Table">
+              <TableHead>
+                <TableRow>
+                  <TableCell  width='200' align="left"></TableCell>
+                  <TableCell>Full Name</TableCell>
+                  <TableCell align="left">Contact</TableCell>
+                </TableRow>
+              </TableHead>
+  
+              { !info.data  ? (
+                 <TableBody>
+                   <TableRow >
+                     <TableCell component="th" scope="row"></TableCell>
+                     <TableCell align="left"></TableCell>
+                     <TableCell align="left"></TableCell>
+                   </TableRow>
+               </TableBody>
+              ) : (
+                <TableBody>
+                  { info.data.map((row) => (
+                    <TableRow key={row.full_name}>
+                       <TableCell align="left"> 
+                       <IconButton variant="contained" style={{marginLeft : "auto"}} onClick={() => handleUpdate(row)}><EditIcon /></IconButton>
+                       <IconButton variant="contained" style={{marginLeft : "auto"}} onClick={() => onClickDeleteContact(row)}><DeleteIcon /></IconButton>
+                      </TableCell>
+                      <TableCell component="th" scope="row">{row.full_name}</TableCell>
+                      <TableCell align="left">{row.phone_number}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              )}
+            </Table>
+          </TableContainer> 
+  
+          <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
+            <DialogTitle id="form-dialog-title">New Contact</DialogTitle>
+              <DialogContent>
+              <TextField
+                  autoFocus
+                  margin="dense"
+                  id="fullName"
+                  label="Full Name"
+                  value={state.fullName}
+                  onChange={handleChange("fullName")}
+                  type="text"
+                  fullWidth
+                  required
+                />
+                <TextField
+                  id="phone"
+                  label="Philippines (+63)"
+                  value={state.contactNumber}
+                  inputProps={{
+                    maxLength: 13,
+                    onInput: (event) => validatePhone(event)
+                  }}
+                />
+                {/* <TextField
+                  margin="dense"
+                  id="contactNumber"
+                  label="Contact Number"
+                  value={state.contactNumber}
+                  inputProps={{
+                    maxLength: 13,
+                    onInput: (event) => validatePhoneLogin(event)
+                  }}
+                  required
+                /> */}
+              </DialogContent>
+          
+            <DialogActions>
+              <Button onClick={handleClose} color="primary">Cancel</Button>
+              <Button onClick={onClickCreateContact} color="primary">Save</Button>
+            </DialogActions>
+          </Dialog>
+          <Dialog open={edit} onClose={handleClose} aria-labelledby="form-dialog-title">
+            <DialogTitle id="form-dialog-title">Update Contact</DialogTitle>
+              <DialogContent>
+              <TextField
+                  autoFocus
+                  margin="dense"
+                  id="fullName"
+                  label="Full Name"
+                  value={editInfo.full_name}
+                  onChange={infoHandler("full_name")}
+                  type="text"
+                  fullWidth
+                  required
+                />
+                <TextField
+                  margin="dense"
+                  id="contactNumber"
+                  label="Contact Number"
+                  value={editInfo.phone_number}
+                  // onChange={infoHandler("phone_number")}
+                  inputProps={{
+                    maxLength: 13,
+                    onInput: (event) => validatePhone2(event)
+                  }}
+                  type="text"
+                  fullWidth
+                  required
+                />
+              </DialogContent>
+          
+            <DialogActions>
+              <Button onClick={handleClose} color="primary">Cancel</Button>
+              <Button onClick={onClickUpdateContact} color="primary">Save</Button>
+            </DialogActions>
+          </Dialog>
+          <Snackbar
+            anchorOrigin={{vertical: 'top', horizontal: 'center'}}
+            open={snackBar.open}
+            onClose={() => setSnackBar({ open: false, message: ""})}
+            message={snackBar.message}
+            action={[
+              <IconButton key="close" aria-label="close" color="inherit" onClick={() => setSnackBar({ open: false, message: ""})}>
+                <CloseIcon />
+              </IconButton>
+            ]}
+          />
+  
+        </Container>
+      </React.Fragment>
+    )
+
   }
-
-
-  return(
-    <React.Fragment>
-      <Container maxWidth="xl">
-        <div style={{display : "flex", marginBottom : "20px"}}>
-          <Button variant="contained" style={{marginLeft : "auto"}} color="primary" onClick={handleClickOpen}>
-            NEW CONTACT
-          </Button>
-        </div>
-        <TableContainer component={Paper}>
-          <Table aria-label="Contact Table">
-            <TableHead>
-              <TableRow>
-                <TableCell  width='200' align="left"></TableCell>
-                <TableCell>Full Name</TableCell>
-                <TableCell align="left">Contact</TableCell>
-              </TableRow>
-            </TableHead>
-
-            { !info.data  ? (
-               <TableBody>
-                 <TableRow >
-                   <TableCell component="th" scope="row"></TableCell>
-                   <TableCell align="left"></TableCell>
-                   <TableCell align="left"></TableCell>
-                 </TableRow>
-             </TableBody>
-            ) : (
-              <TableBody>
-                { info.data.map((row) => (
-                  <TableRow key={row.full_name}>
-                     <TableCell align="left"> 
-                     <IconButton variant="contained" style={{marginLeft : "auto"}} onClick={() => handleUpdate(row)}><EditIcon /></IconButton>
-                     <IconButton variant="contained" style={{marginLeft : "auto"}} onClick={() => onClickDeleteContact(row)}><DeleteIcon /></IconButton>
-                    </TableCell>
-                    <TableCell component="th" scope="row">{row.full_name}</TableCell>
-                    <TableCell align="left">{row.phone_number}</TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            )}
-          </Table>
-        </TableContainer> 
-
-        <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
-          <DialogTitle id="form-dialog-title">New Contact</DialogTitle>
-            <DialogContent>
-            <TextField
-                autoFocus
-                margin="dense"
-                id="fullName"
-                label="Full Name"
-                value={state.fullName}
-                onChange={handleChange("fullName")}
-                type="text"
-                fullWidth
-                required
-              />
-              <TextField
-                id="phone"
-                label="Philippines (+63)"
-                value={state.contactNumber}
-                inputProps={{
-                  maxLength: 13,
-                  onInput: (event) => validatePhone(event)
-                }}
-              />
-              {/* <TextField
-                margin="dense"
-                id="contactNumber"
-                label="Contact Number"
-                value={state.contactNumber}
-                inputProps={{
-                  maxLength: 13,
-                  onInput: (event) => validatePhoneLogin(event)
-                }}
-                required
-              /> */}
-            </DialogContent>
-        
-          <DialogActions>
-            <Button onClick={handleClose} color="primary">Cancel</Button>
-            <Button onClick={onClickCreateContact} color="primary">Save</Button>
-          </DialogActions>
-        </Dialog>
-        <Dialog open={edit} onClose={handleClose} aria-labelledby="form-dialog-title">
-          <DialogTitle id="form-dialog-title">Update Contact</DialogTitle>
-            <DialogContent>
-            <TextField
-                autoFocus
-                margin="dense"
-                id="fullName"
-                label="Full Name"
-                value={editInfo.full_name}
-                onChange={infoHandler("full_name")}
-                type="text"
-                fullWidth
-                required
-              />
-              <TextField
-                margin="dense"
-                id="contactNumber"
-                label="Contact Number"
-                value={editInfo.phone_number}
-                // onChange={infoHandler("phone_number")}
-                inputProps={{
-                  maxLength: 13,
-                  onInput: (event) => validatePhone2(event)
-                }}
-                type="text"
-                fullWidth
-                required
-              />
-            </DialogContent>
-        
-          <DialogActions>
-            <Button onClick={handleClose} color="primary">Cancel</Button>
-            <Button onClick={onClickUpdateContact} color="primary">Save</Button>
-          </DialogActions>
-        </Dialog>
-        <Snackbar
-          anchorOrigin={{vertical: 'top', horizontal: 'center'}}
-          open={snackBar.open}
-          onClose={() => setSnackBar({ open: false, message: ""})}
-          message={snackBar.message}
-          action={[
-            <IconButton key="close" aria-label="close" color="inherit" onClick={() => setSnackBar({ open: false, message: ""})}>
-              <CloseIcon />
-            </IconButton>
-          ]}
-        />
-
-      </Container>
-    </React.Fragment>
-  )
+  
 } 
 
 ContactContainer.propTypes = {
