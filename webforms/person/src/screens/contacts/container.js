@@ -2,12 +2,15 @@ import React, { useEffect, useState, Fragment } from 'react';
 import axios from "axios";
 import PropTypes from 'prop-types';
 import EditIcon from '@material-ui/icons/Edit'
+import InputAdornment from '@material-ui/core/InputAdornment';
 import DeleteIcon from '@material-ui/icons/Delete'
+import CloseIcon from '@material-ui/icons/Close';
+
 import { 
   Table,TableBody,TableCell,TableContainer,
   TableHead,TableRow,Paper, Button, TextField,
   Dialog, DialogActions, DialogContent, DialogTitle,
-  Container,IconButton
+  Container,IconButton,Snackbar
 } from '@material-ui/core';
 
 function ContactContainer (props) {
@@ -18,10 +21,17 @@ function ContactContainer (props) {
   const [edit, setEdit] = React.useState(false);
   const [editInfo, seteditInfo] = useState({});
   const handleChange = name => event => setState({...state, [name]: event.target.value});
+  const [phoneNumberLogin, setPhoneNumberLogin] = useState("+63");
   const [state, setState] = useState({
     fullName: "",
-    contactNumber: "",
+    contactNumber: "+63",
   });
+
+  const [snackBar, setSnackBar] = useState({
+    open: false,
+    message: ""
+  });
+
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -32,7 +42,6 @@ function ContactContainer (props) {
   };
 
   const getContactList = async () => {
-    console.log(props);
     await axios.post(`${process.env.REACT_ENDPOINT}/view-contact-person`, {
         ppk:  props.details.sub,
     },{
@@ -47,6 +56,37 @@ function ContactContainer (props) {
     });
   }
 
+  const validatePhone = (event) => {
+    if (event.target.value.indexOf("+63") !== 0){
+      console.log(event.target.value);
+      editInfo({
+        ...state, 
+        "contactNumber": state.contactNumber
+      })
+    } else {
+      setState({
+        ...state, 
+        "contactNumber": event.target.value.replace(/[^0-9+]/g, '')
+      })
+    }
+    
+  };
+
+  const validatePhone2 = (event) => {
+    if (event.target.value.indexOf("+63") !== 0){
+      console.log(event.target.value);
+      seteditInfo({
+        ...editInfo, 
+        phone_number: "+63"
+      })
+    } else {
+      seteditInfo({
+        ...editInfo, 
+        phone_number: event.target.value.replace(/[^0-9+]/g, '')
+      })
+    }
+    console.log(editInfo);
+  };
   const onClickCreateContact = async () => {
     axios.post(`${process.env.REACT_ENDPOINT}/create-contact-person`, {
       ppk:  props.details.sub,
@@ -60,11 +100,12 @@ function ContactContainer (props) {
     }).then(response => {
       handleClose()
       getContactList()
+      setSnackBar({ open: true, message: "Phone number already registered."})
     }).catch(error => {
       console.log(error)
     });
   }
-  const infoHandler = name => event => seteditInfo({...editInfo, [name]: event.target.value});
+  const infoHandler = name => event => seteditInfo({...editInfo, full_name: event.target.value});
   const onClickUpdateContact = async () => {
     axios.post(`${process.env.REACT_ENDPOINT}/update-contact-person`,{
       ppk:  props.details.sub,
@@ -79,6 +120,7 @@ function ContactContainer (props) {
       }).then(response => {
       handleClose()
       getContactList()
+      setSnackBar({ open: true, message: "Phone number already registered."})
     }).catch(error => {
       console.log(error)
     });
@@ -168,15 +210,25 @@ function ContactContainer (props) {
                 required
               />
               <TextField
+                id="phone"
+                label="Philippines (+63)"
+                value={state.contactNumber}
+                inputProps={{
+                  maxLength: 13,
+                  onInput: (event) => validatePhone(event)
+                }}
+              />
+              {/* <TextField
                 margin="dense"
                 id="contactNumber"
                 label="Contact Number"
                 value={state.contactNumber}
-                onChange={handleChange("contactNumber")}
-                type="text"
-                fullWidth
+                inputProps={{
+                  maxLength: 13,
+                  onInput: (event) => validatePhoneLogin(event)
+                }}
                 required
-              />
+              /> */}
             </DialogContent>
         
           <DialogActions>
@@ -203,7 +255,11 @@ function ContactContainer (props) {
                 id="contactNumber"
                 label="Contact Number"
                 value={editInfo.phone_number}
-                onChange={infoHandler("phone_number")}
+                // onChange={infoHandler("phone_number")}
+                inputProps={{
+                  maxLength: 13,
+                  onInput: (event) => validatePhone2(event)
+                }}
                 type="text"
                 fullWidth
                 required
@@ -215,6 +271,17 @@ function ContactContainer (props) {
             <Button onClick={onClickUpdateContact} color="primary">Save</Button>
           </DialogActions>
         </Dialog>
+        <Snackbar
+          anchorOrigin={{vertical: 'top', horizontal: 'center'}}
+          open={snackBar.open}
+          onClose={() => setSnackBar({ open: false, message: ""})}
+          message={snackBar.message}
+          action={[
+            <IconButton key="close" aria-label="close" color="inherit" onClick={() => setSnackBar({ open: false, message: ""})}>
+              <CloseIcon />
+            </IconButton>
+          ]}
+        />
 
       </Container>
     </React.Fragment>
