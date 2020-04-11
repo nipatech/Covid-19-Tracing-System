@@ -32,52 +32,48 @@ function ContactContainer (props) {
   };
 
   const getContactList = async () => {
-    await axios.post("https://lltkyad8xg.execute-api.us-east-1.amazonaws.com/COVID/view-contact-person", {
+    await axios.post(`${process.env.REACT_ENDPOINT}/view-contact-person`, {
         ppk:  props.details.sub,
     }).then(response => {
       setData({ data:  response.data.Items })
-
-      console.log();
-    
     }).catch(error => {
     console.log(error)
     });
   }
 
   const onClickCreateContact = async () => {
-    axios.post("https://lltkyad8xg.execute-api.us-east-1.amazonaws.com/COVID/create-contact-person", {
+    axios.post(`${process.env.REACT_ENDPOINT}/create-contact-person`, {
       ppk:  props.details.sub,
       n:    state.fullName,
       pn:   state.contactNumber,
     }).then(response => {
       handleClose()
+      getContactList()
     }).catch(error => {
       console.log(error)
     });
   }
   const infoHandler = name => event => seteditInfo({...editInfo, [name]: event.target.value});
   const onClickUpdateContact = async () => {
-    axios.post("https://lltkyad8xg.execute-api.us-east-1.amazonaws.com/COVID/update-contact-person", {
+    axios.post(`${process.env.REACT_ENDPOINT}/update-contact-person`, {
       ppk:  props.details.sub,
       n:    editInfo.full_name,
       ts :  editInfo.timestamp.toString(),
       pn:   editInfo.phone_number,
     }).then(response => {
       handleClose()
+      getContactList()
     }).catch(error => {
       console.log(error)
     });
   }
 
   const onClickDeleteContact = async (nextprops) => {
-    await axios.post("https://lltkyad8xg.execute-api.us-east-1.amazonaws.com/COVID/delete-contact-person", {
+    await axios.post(`${process.env.REACT_ENDPOINT}/delete-contact-person`, {
         ppk:  props.details.sub,
         ts : nextprops.timestamp
     }).then(response => {
-      setData({ data:  response.data.Items })
-
-      console.log();
-    
+      getContactList()
     }).catch(error => {
     console.log(error)
     });
@@ -115,7 +111,7 @@ function ContactContainer (props) {
                <TableBody>
                  <TableRow >
                    <TableCell component="th" scope="row"></TableCell>
-                   <TableCell align="left">EMPTY</TableCell>
+                   <TableCell align="left"></TableCell>
                    <TableCell align="left"></TableCell>
                  </TableRow>
              </TableBody>
