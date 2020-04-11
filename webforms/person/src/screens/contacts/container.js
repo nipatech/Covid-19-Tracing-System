@@ -189,14 +189,13 @@ function ContactContainer (props) {
                   required
                 />
                 <TextField
-                  margin="dense"
-                  id="contactNumber"
-                  label="Contact Number"
+                  id="phone"
+                  label="Philippines (+63)"
                   value={state.contactNumber}
-                  onChange={handleChange("contactNumber")}
-                  type="text"
-                  fullWidth
-                  required
+                  inputProps={{
+                    maxLength: 13,
+                    onInput: (event) => validatePhone(event)
+                  }}
                 />
               </DialogContent>
           
@@ -300,7 +299,7 @@ function ContactContainer (props) {
           <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
             <DialogTitle id="form-dialog-title">New Contact</DialogTitle>
               <DialogContent>
-              <TextField
+                <TextField
                   autoFocus
                   margin="dense"
                   id="fullName"
@@ -320,17 +319,6 @@ function ContactContainer (props) {
                     onInput: (event) => validatePhone(event)
                   }}
                 />
-                {/* <TextField
-                  margin="dense"
-                  id="contactNumber"
-                  label="Contact Number"
-                  value={state.contactNumber}
-                  inputProps={{
-                    maxLength: 13,
-                    onInput: (event) => validatePhoneLogin(event)
-                  }}
-                  required
-                /> */}
               </DialogContent>
           
             <DialogActions>
