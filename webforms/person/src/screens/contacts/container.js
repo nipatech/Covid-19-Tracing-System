@@ -44,21 +44,15 @@ function ContactContainer (props) {
   const getContactList = async () => {
     await axios.post(`${process.env.REACT_ENDPOINT}/view-contact-person`, {
         ppk:  props.details.sub,
-    },{
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': props.jwtToken
-      }
     }).then(response => {
       setData({ data:  response.data.Items })
+      window.render()
     }).catch(error => {
-    console.log(error)
     });
   }
 
   const validatePhone = (event) => {
     if (event.target.value.indexOf("+63") !== 0){
-      console.log(event.target.value);
       editInfo({
         ...state, 
         "contactNumber": state.contactNumber
@@ -85,24 +79,21 @@ function ContactContainer (props) {
         phone_number: event.target.value.replace(/[^0-9+]/g, '')
       })
     }
-    console.log(editInfo);
   };
   const onClickCreateContact = async () => {
     axios.post(`${process.env.REACT_ENDPOINT}/create-contact-person`, {
       ppk:  props.details.sub,
       n:    state.fullName,
       pn:   state.contactNumber,
-    },{
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': props.jwtToken
-      }
     }).then(response => {
       handleClose()
+      setSnackBar({ open: true, message: response.data.msg})
+      setState({
+        fullName: "",
+        contactNumber: "+63",
+      });
       getContactList()
-      setSnackBar({ open: true, message: "Phone number already registered."})
     }).catch(error => {
-      console.log(error)
     });
   }
   const infoHandler = name => event => seteditInfo({...editInfo, full_name: event.target.value});
@@ -112,17 +103,11 @@ function ContactContainer (props) {
       n:    editInfo.full_name,
       ts :  editInfo.timestamp.toString(),
       pn:   editInfo.phone_number,
-    },{
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': props.jwtToken
-      }
-      }).then(response => {
+    }).then(response => {
       handleClose()
       getContactList()
-      setSnackBar({ open: true, message: "Phone number already registered."})
+      setSnackBar({ open: true, message: response.data.msg})
     }).catch(error => {
-      console.log(error)
     });
   }
 
@@ -130,15 +115,10 @@ function ContactContainer (props) {
     await axios.post(`${process.env.REACT_ENDPOINT}/delete-contact-person`, {
         ppk:  props.details.sub,
         ts : nextprops.timestamp
-    },{
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': props.jwtToken
-      }
     }).then(response => {
       getContactList()
+      setSnackBar({ open: true, message: response.data})
     }).catch(error => {
-    console.log(error)
     });
   }
 
@@ -149,8 +129,18 @@ function ContactContainer (props) {
   };
   useEffect(() => {
     getContactList()
-    console.log();
   },[]);
+
+
+
+  const clear = () => {
+    const [state, setState] = useState({
+      fullName: "",
+      contactNumber: "+63",
+    });
+  
+  }
+
 
   return(
     <React.Fragment>
