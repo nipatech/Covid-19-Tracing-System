@@ -88,6 +88,10 @@ function ContactContainer (props) {
     }).then(response => {
       handleClose()
       setSnackBar({ open: true, message: response.data.msg})
+      setState({
+        fullName: "",
+        contactNumber: "+63",
+      });
       getContactList()
     }).catch(error => {
     });
