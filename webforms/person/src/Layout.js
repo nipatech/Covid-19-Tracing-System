@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import { Link } from "react-router-dom";
@@ -119,16 +119,22 @@ const useStyles = makeStyles((theme) => ({
         verticalAlign: "bottom"
       }
     }
+  },
+  menu: {
+    width: drawerWidth,
+    textAlign: "center",
+    position: "absolute",
+    fontSize: 20
   }
 }));
 
 function Layout(props) {
   const classes = useStyles();
   const theme = useTheme();
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(window.innerWidth > 768 ? true : false);
 
-  const { children } = props;
-
+  const { children, history } = props;
+  
   const handleDrawerOpen = () => {
     setOpen(true);
   };
@@ -143,7 +149,7 @@ function Layout(props) {
       <AppBar
         position="fixed"
         className={clsx(classes.appBar, {
-          [classes.appBarShift]: open,
+          [classes.appBarShift]: window.innerWidth > 768 && open,
         })}
       >
         <Toolbar>
@@ -165,6 +171,7 @@ function Layout(props) {
       </AppBar>
       <Drawer
         variant="permanent"
+        variant={window.innerWidth > 768 ? "permanent" : "temporary"}
         className={clsx(classes.drawer, {
           [classes.drawerOpen]: open,
           [classes.drawerClose]: !open,
@@ -175,17 +182,21 @@ function Layout(props) {
             [classes.drawerClose]: !open,
           }),
         }}
+        open={open}
+        onClose={() => setOpen(false)}
       >
         <div className={classes.toolbar}>
+          <div className={classes.menu}>Menu</div>
           <IconButton onClick={handleDrawerClose}>
             {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
           </IconButton>
+          
         </div>
         <Divider />
         <List className={classes.withLink}>
 
-          <Link to="/contacts">
-            <ListItem button>
+          <Link to="/contacts" onClick={() => setOpen(false)}>
+            <ListItem button selected={history.location.pathname.startsWith("/contacts")}>
               <ListItemIcon>
                 <SupervisedUserCircleIcon />
               </ListItemIcon>
@@ -193,8 +204,8 @@ function Layout(props) {
             </ListItem>
           </Link>
 
-          <Link to="/profile">
-            <ListItem button>
+          <Link to="/profile" onClick={() => setOpen(false)}>
+            <ListItem button selected={history.location.pathname.startsWith("/profile")}>
               <ListItemIcon>
                 <AccountCircleIcon />
               </ListItemIcon>
