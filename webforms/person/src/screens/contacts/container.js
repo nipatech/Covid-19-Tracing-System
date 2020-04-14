@@ -47,7 +47,7 @@ function ContactContainer (props) {
     await axios.post(`${process.env.REACT_ENDPOINT}/view-contact-person`, {
         ppk:  props.details.sub,
     }).then(response => {
-      setData({ data:  response.data.Items })
+      setData({ data:  response.data })
     }).catch(error => {
     });
   }
@@ -284,8 +284,12 @@ function ContactContainer (props) {
                   { info.data.map((row) => (
                     <TableRow key={row.full_name}>
                        <TableCell align="left"> 
-                       <IconButton variant="contained" style={{marginLeft : "auto"}} onClick={() => handleUpdate(row)}><EditIcon /></IconButton>
-                       <IconButton variant="contained" style={{marginLeft : "auto"}} onClick={() => onClickDeleteContact(row)}><DeleteIcon /></IconButton>
+                        { !row.qa ? (
+                          <IconButton variant="contained" style={{marginLeft : "auto"}} onClick={() => handleUpdate(row)}><EditIcon /></IconButton>
+                          ):null} 
+                        { !row.qa ? (  
+                          <IconButton variant="contained" style={{marginLeft : "auto"}} onClick={() => onClickDeleteContact(row)}><DeleteIcon /></IconButton>
+                        ):null}
                       </TableCell>
                       <TableCell component="th" scope="row">{row.full_name}</TableCell>
                       <TableCell align="left">{row.phone_number}</TableCell>
